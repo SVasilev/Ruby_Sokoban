@@ -19,6 +19,7 @@ class Border
   end
 
   def top_right
+    
     Position.new @bottom_right.x, @top_left.y
   end
 
