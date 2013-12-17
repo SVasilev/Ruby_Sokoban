@@ -19,7 +19,6 @@ class Border
   end
 
   def top_right
-    
     Position.new @bottom_right.x, @top_left.y
   end
 
@@ -94,6 +93,7 @@ end
 
 class Ground
   attr_reader :width, :height, :position
+  attr_accessor :picture_indexes
   def initialize(window, picture_paths = [], width = 14, height = 10, position = Position.new(220, 30))
     @window = window
     @pictures = []
@@ -102,11 +102,6 @@ class Ground
       @pictures << (window.image picture_paths[4])
       @picture_indexes << 4
     end
-    @picture_indexes[0] = 0
-    @picture_indexes[1] = 1
-    @picture_indexes[2] = 2
-    @picture_indexes[3] = 3
-
     @picture_paths = picture_paths
     @width = width
     @height = height
@@ -141,6 +136,7 @@ class Ground
 end
 
 class Cursor
+  attr_accessor :index
   def initialize(window, ground, picture_path = "")
     @window   = window
     @ground   = ground
@@ -177,8 +173,6 @@ class Cursor
         @index += @ground.width
       end
     end
-
-    p @index
   end
 end
 
@@ -204,7 +198,12 @@ Shoes.app width: 1000, height: 600 do
 
   game_cursor = Cursor.new self, ground, "cursor.gif"
   keypress do |key|
-    game_cursor.move(key)
+    if key == " "
+      ground.picture_indexes[game_cursor.index] = tool_box.clicked_tool
+      ground.display
+    else
+      game_cursor.move(key)
+    end
   end
 
   tool_box.display
