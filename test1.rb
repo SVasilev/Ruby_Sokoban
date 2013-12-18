@@ -120,6 +120,15 @@ class Ground
     Border.new(@window, Position.new(@position.x, @position.y), Position.new(@position.x + width_in_pxels, @position.y + height_in_pixels), 15).draw
   end
 
+  #should check if everything is ok when saving
+  def propriety_check
+
+  end
+
+  def fix_start
+    @picture_indexes[@picture_indexes.index 3] = 4 if @picture_indexes.include? 3
+  end  
+
   def display
     current_x, current_y = @position.x, @position.y
     @pictures.each_index do |index|
@@ -138,7 +147,7 @@ end
 class Cursor
   attr_accessor :index
   def initialize(window, ground, picture_path = "")
-    @window   = window
+    #@window   = window
     @ground   = ground
     @index    = 0
     @position = Position.new ground.position.x, ground.position.y
@@ -176,6 +185,36 @@ class Cursor
   end
 end
 
+class Menu
+  def initialize(window, stack, button_texts = [], position = Position.new, width = 122, button_height = 50, bottom_margin = 10)
+    @window = window
+    @stack = stack
+    @button_texts = button_texts
+    @position = position
+    @width = width
+    @button_height = button_height
+    @bottom_margin = bottom_margin
+  end
+
+  def draw_border
+    Border.new(@window, Position.new(@position.x, @position.y), Position.new(@position.x + @width, @position.y + height), 15).draw
+  end
+
+  def height
+    #It looks like Shoes! has some problem setting the button height... So the real height of a button is real_height = button_height - 18.
+    button_height_fix = 18
+    @button_texts.size * (@button_height - button_height_fix + @bottom_margin)
+  end
+
+  def display
+    @stack.style left: @position.x, top: @position.y, width: @width, height: height
+    @button_texts.each do |text| 
+      @stack.button(text).style width: @width, height: @button_height, margin_bottom: @bottom_margin
+    end
+    draw_border
+  end
+end
+
 #this kinda functions should go in some module? or in other file which will be included/required?
 def set_toolbox_image_paths
   [["ToolboxNormal/wall.gif", "ToolboxClicked/wall.gif"], ["ToolboxNormal/cube.gif", "ToolboxClicked/cube.gif"],
@@ -192,6 +231,9 @@ Shoes.app width: 1000, height: 600 do
   tool_box = ToolBox.new (para strong("Tool Box"), font: "Arial"), self, Position.new(40, 30)
   toolbox_image_paths.each { |paths| tool_box.add_tool Tool.new image, paths }
 
+  menu = Menu.new self, stack, ["Test Level", "Save Level", "Load Level", "Exit"], Position.new(40, 382)
+  menu.display
+
   ground_image_paths = set_ground_image_paths
   ground = Ground.new self, ground_image_paths
   ground.display
@@ -199,6 +241,7 @@ Shoes.app width: 1000, height: 600 do
   game_cursor = Cursor.new self, ground, "cursor.gif"
   keypress do |key|
     if key == " "
+      ground.fix_start if tool_box.clicked_tool == 3
       ground.picture_indexes[game_cursor.index] = tool_box.clicked_tool
       ground.display
     else
@@ -213,4 +256,8 @@ Shoes.app width: 1000, height: 600 do
       tool_box.display
     end
   end
+
+  #@button = button "asd"
+  #@button.style width: 100
+  #p @button.style[:width]
 end
