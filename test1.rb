@@ -92,8 +92,7 @@ class ToolBox
 end
 
 class Ground
-  attr_reader :width, :height, :position
-  attr_accessor :picture_indexes
+  attr_reader :pictures, :picture_paths, :width, :height, :position, :picture_indexes
   def initialize(window, picture_paths = [], width = 14, height = 10, position = Position.new(220, 30))
     @window = window
     @pictures = []
@@ -106,6 +105,26 @@ class Ground
     @width = width
     @height = height
     @position = position
+    set_pictures
+  end
+
+  def picture_index_change(index, value)
+    @picture_indexes[index] = value
+    @pictures[index].path = @picture_paths[value]
+  end
+
+  def set_pictures
+    current_x, current_y = @position.x, @position.y
+    @pictures.each_index do |index|
+      @pictures[index].path = @picture_paths[@picture_indexes[index]]
+      @pictures[index].move current_x, current_y
+      current_x += @pictures[index].full_width
+      if ((index + 1).remainder @width) == 0
+        current_x  = @position.x
+        current_y += @pictures[index].full_height
+      end
+    end
+    draw_border
   end
 
   def width_in_pxels
@@ -120,27 +139,40 @@ class Ground
     Border.new(@window, Position.new(@position.x, @position.y), Position.new(@position.x + width_in_pxels, @position.y + height_in_pixels), 15).draw
   end
 
+  def ground_hover?(mouse_left, mouse_top)
+    mouse_left > @pictures[0].style[:left] and mouse_top > @pictures[0].style[:top] and
+    mouse_left < @pictures.last.style[:left] + @pictures[0].full_width and 
+    mouse_top  < @pictures.last.style[:top]  + @pictures[0].full_height
+  end
+
+  def picture_hover?(index, mouse_left, mouse_top)
+    @pictures[index].style[:left] + @pictures[index].full_width > mouse_left and 
+    @pictures[index].style[:top] + @pictures[index].full_height > mouse_top
+  end
+
+  def picture_index_at(mouse_left, mouse_top)
+    return false if !ground_hover? mouse_left, mouse_top
+    @pictures.each_index do |index|
+      return index if picture_hover? index, mouse_left, mouse_top
+    end
+  end
+
   #should check if everything is ok when saving
   def propriety_check
 
   end
 
   def fix_start
-    @picture_indexes[@picture_indexes.index 3] = 4 if @picture_indexes.include? 3
+    picture_index_change(@picture_indexes.index(3), 4) if @picture_indexes.include? 3
   end  
 
-  def display
-    current_x, current_y = @position.x, @position.y
-    @pictures.each_index do |index|
-      @pictures[index].path = @picture_paths[@picture_indexes[index]]
-      @pictures[index].move current_x, current_y
-      current_x += @pictures[index].full_width
-      if ((index + 1).remainder @width) == 0
-        current_x  = @position.x
-        current_y += @pictures[index].full_height
-      end
-    end
-    draw_border
+  def change_image_path(index)
+    #@pictures[index].path = @picture_paths[@picture_indexes[index]]
+  end
+
+  def update(left, top, tool_box)
+    fix_start if tool_box.clicked_tool == 3
+    picture_index_change picture_index_at(left, top), tool_box.clicked_tool
   end
 end
 
@@ -209,7 +241,7 @@ class Menu
   def display
     @stack.style left: @position.x, top: @position.y, width: @width, height: height
     @button_texts.each do |text| 
-      @stack.button(text).style width: @width, height: @button_height, margin_bottom: @bottom_margin
+      @stack.button(text).style width: @width, height: @button_height, margin_bottom: @bottom_margin#, state: "disabled"
     end
     draw_border
   end
@@ -231,7 +263,7 @@ Shoes.app width: 1000, height: 600 do
   tool_box = ToolBox.new (para strong("Tool Box"), font: "Arial"), self, Position.new(40, 30)
   toolbox_image_paths.each { |paths| tool_box.add_tool Tool.new image, paths }
 
-  menu = Menu.new self, stack, ["Test Level", "Save Level", "Load Level", "Exit"], Position.new(40, 382)
+  menu = Menu.new self, stack, ["Test Level", "New Level", "Save Level", "Load Level"], Position.new(40, 382)
   menu.display
 
   ground_image_paths = set_ground_image_paths
@@ -239,7 +271,19 @@ Shoes.app width: 1000, height: 600 do
   ground.display
 
   game_cursor = Cursor.new self, ground, "cursor.gif"
+
+  mouse_down = false
+  click { |button, left, top| mouse_down = true if button == 1 and ground.ground_hover?(left, top) }
+  release do |button, left, top|
+    if button == 1 and ground.ground_hover?(left, top)
+      ground.update left, top, tool_box
+      mouse_down = false
+    end
+  end
+  motion { |left, top| ground.update left, top, tool_box if mouse_down }
+
   keypress do |key|
+    p key
     if key == " "
       ground.fix_start if tool_box.clicked_tool == 3
       ground.picture_indexes[game_cursor.index] = tool_box.clicked_tool
@@ -254,6 +298,7 @@ Shoes.app width: 1000, height: 600 do
     tool_box.tools[index].picture.click do
       tool_box.clicked_tool = index
       tool_box.display
+      #mouse_down = false
     end
   end
 
@@ -261,3 +306,6 @@ Shoes.app width: 1000, height: 600 do
   #@button.style width: 100
   #p @button.style[:width]
 end
+
+
+
