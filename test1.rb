@@ -157,22 +157,22 @@ class Ground
     end
   end
 
-  #should check if everything is ok when saving
+  #should check if everything is ok when saving/testing
   def propriety_check
 
   end
 
   def fix_start
     picture_index_change(@picture_indexes.index(3), 4) if @picture_indexes.include? 3
-  end  
-
-  def change_image_path(index)
-    #@pictures[index].path = @picture_paths[@picture_indexes[index]]
   end
 
   def update(left, top, tool_box)
     fix_start if tool_box.clicked_tool == 3
     picture_index_change picture_index_at(left, top), tool_box.clicked_tool
+  end
+
+  def clear
+    @pictures.each_index { |index| picture_index_change index, 4 }
   end
 end
 
@@ -218,6 +218,7 @@ class Cursor
 end
 
 class Menu
+  attr_reader :stack
   def initialize(window, stack, button_texts = [], position = Position.new, width = 122, button_height = 50, bottom_margin = 10)
     @window = window
     @stack = stack
@@ -263,12 +264,21 @@ Shoes.app width: 1000, height: 600 do
   tool_box = ToolBox.new (para strong("Tool Box"), font: "Arial"), self, Position.new(40, 30)
   toolbox_image_paths.each { |paths| tool_box.add_tool Tool.new image, paths }
 
-  menu = Menu.new self, stack, ["Test Level", "New Level", "Save Level", "Load Level"], Position.new(40, 382)
-  menu.display
-
   ground_image_paths = set_ground_image_paths
   ground = Ground.new self, ground_image_paths
   ground.display
+
+  menu = Menu.new self, stack, ["Test Level", "New Level", "Save Level", "Load Level"], Position.new(40, 382)
+  menu.display
+  menu.stack.contents.each do |button|
+    button.click do
+      case button.style[:text]
+      when "New Level"
+        ground.clear if confirm("Are you sure you want to start new level? All data for this level will be lost")
+      end
+    end
+  end
+
 
   game_cursor = Cursor.new self, ground, "cursor.gif"
 
@@ -298,7 +308,6 @@ Shoes.app width: 1000, height: 600 do
     tool_box.tools[index].picture.click do
       tool_box.clicked_tool = index
       tool_box.display
-      #mouse_down = false
     end
   end
 
