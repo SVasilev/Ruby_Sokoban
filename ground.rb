@@ -1,30 +1,38 @@
 module Sokoban
   class Ground
     attr_reader :pictures, :picture_paths, :width, :height, :position, :picture_indexes
-    def initialize(window, picture_paths = [], width = 14, height = 10, position = Position.new(220, 30))
+    def initialize(window, picture_paths = [], position = Position.new(220, 30), width = 14, height = 10)
       @window = window
       @pictures = []
       @picture_indexes = []
       (width * height).times do 
         @pictures << (window.image picture_paths[4])
-        @picture_indexes << 4
+        @picture_indexes << [4]
       end
       @picture_paths = picture_paths
+      @position = position
       @width = width
       @height = height
-      @position = position
       set_pictures
     end
 
     def picture_index_change(index, value)
-      @picture_indexes[index] = value
+      if value == 1 or value == 2
+        if (value == 1 and @picture_indexes[index][0] == 2) or (value == 2 and @picture_indexes[index][0] == 1)
+          @picture_indexes[index] << value if @picture_indexes[index].size == 1
+        else
+          @picture_indexes[index] = [value] unless @picture_indexes[index].size == 2
+        end
+      else
+        @picture_indexes[index] = [value]
+      end
       @pictures[index].path = @picture_paths[value]
     end
 
     def set_pictures
       current_x, current_y = @position.x, @position.y
       @pictures.each_index do |index|
-        @pictures[index].path = @picture_paths[@picture_indexes[index]]
+        @pictures[index].path = @picture_paths[@picture_indexes[index][0]]
         @pictures[index].move current_x, current_y
         current_x += @pictures[index].full_width
         if ((index + 1).remainder @width) == 0
@@ -65,13 +73,16 @@ module Sokoban
       end
     end
 
-    #should check if everything is ok when saving/testing
     def propriety_check
-
+      warnings = ""
+      warnings << "The level doesn't have a start." unless @picture_indexes.include? [3]
+      warnings << " Cubes don't match the finals count." unless @picture_indexes.count([1]) == @picture_indexes.count([2])
+      #should check if there is a solution
+      warnings
     end
 
     def fix_start
-      picture_index_change(@picture_indexes.index(3), 4) if @picture_indexes.include? 3
+      picture_index_change(@picture_indexes.index([3]), 4) if @picture_indexes.include? [3]
     end
 
     def update(left, top, tool_box)

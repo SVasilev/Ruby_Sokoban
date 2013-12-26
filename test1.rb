@@ -6,26 +6,15 @@ require 'ground.rb'
 require 'player.rb'
 require 'menu.rb'
 require 'picture_paths.rb'
-
-#should go in some module
-def set_toolbox_image_paths
-  [["ToolboxNormal/wall.gif", "ToolboxClicked/wall.gif"], ["ToolboxNormal/cube.gif", "ToolboxClicked/cube.gif"],
-  ["ToolboxNormal/final.gif", "ToolboxClicked/final.gif"], ["ToolboxNormal/smiley.gif", "ToolboxClicked/smiley.gif"],
-  ["ToolboxNormal/eraser.gif", "ToolboxClicked/eraser.gif"]]
-end
-
-def set_ground_image_paths
-  ["NormalElements/wall.gif", "NormalElements/cube.gif", "NormalElements/final.gif", "NormalElements/smiley.gif", "NormalElements/empty.gif"]
-end
-########################
-
+require 'game.rb'
 
 Shoes.app width: 1000, height: 600 do
-  toolbox_image_paths = set_toolbox_image_paths
+
+  toolbox_image_paths = Sokoban.set_toolbox_image_paths
   tool_box = Sokoban::ToolBox.new (para strong("Tool Box"), font: "Arial"), self, Sokoban::Position.new(40, 30)
   toolbox_image_paths.each { |paths| tool_box.add_tool Sokoban::Tool.new image, paths }
 
-  ground_image_paths = set_ground_image_paths
+  ground_image_paths = Sokoban.set_ground_image_paths
   ground = Sokoban::Ground.new self, ground_image_paths
   ground.display
 
@@ -34,11 +23,17 @@ Shoes.app width: 1000, height: 600 do
   menu.stack.contents.each do |button|
     button.click do
       case button.style[:text]
+      when "Test Level"
+        Sokoban.game "pradnq_ta"
       when "New Level"
         ground.clear if confirm("Are you sure you want to start new level? All data for this level will be lost.")
       when "Save Level"
-        file = ask_save_file
-        File.open(file, "w+") { |file| file.write ground.picture_indexes }
+        if ground.propriety_check == ""
+          file = ask_save_file
+          File.open(file, "w+") { |file| file.write ground.picture_indexes }
+        else
+          alert ground.propriety_check
+        end
       when "Load Level"
         if confirm("Are you sure you want to load new level? All data for this level will be lost.")
           file = ask_open_file
