@@ -1,6 +1,8 @@
 module Sokoban
   class Ground
-    attr_reader :pictures, :picture_paths, :width, :height, :position, :picture_indexes
+    attr_reader :pictures, :picture_paths, :width, :height, :position
+    attr_accessor :picture_indexes
+    
     def initialize(window, picture_paths = [], position = Position.new(220, 30), width = 14, height = 10)
       @window = window
       @pictures = []
@@ -77,6 +79,7 @@ module Sokoban
       warnings = ""
       warnings << "The level doesn't have a start." unless @picture_indexes.include? [3]
       warnings << " Cubes don't match the finals count." unless @picture_indexes.count([1]) == @picture_indexes.count([2])
+      warnings << " There are no cubes." if @picture_indexes.count([1]) == 0 and @picture_indexes.count([1, 2]) == 0 and @picture_indexes.count([2, 1]) == 0
       #should check if there is a solution
       warnings
     end

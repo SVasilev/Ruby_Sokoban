@@ -2,10 +2,10 @@ module Sokoban
   class Player
     attr_accessor :index
 
-    def initialize(window, ground, picture_path = "")
+    def initialize(window, ground, picture_path = "", position = Position.new)
       @ground   = ground
       @index    = 0
-      @position = Position.new ground.position.x, ground.position.y
+      @position = position
       @picture  = window.image picture_path
       @picture.move @position.x, @position.y
     end
