@@ -6,6 +6,6 @@ module Sokoban
   end
 
   def self.set_ground_image_paths
-    ["NormalElements/wall.gif", "NormalElements/cube.gif", "NormalElements/final.gif", "NormalElements/smiley.gif", "NormalElements/empty.gif"]
+    ["NormalElements/wall.gif", "NormalElements/cube.gif", "NormalElements/final.gif", "NormalElements/smiley.gif", "NormalElements/empty.gif", "NormalElements/cube_above_final.gif", "NormalElements/smiley_above_final.gif"]
   end
 end

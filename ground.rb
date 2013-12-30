@@ -19,17 +19,29 @@ module Sokoban
     end
 
     def picture_index_change(index, value)
-      if value == 1 or value == 2
-        if (value == 1 and @picture_indexes[index][0] == 2) or (value == 2 and @picture_indexes[index][0] == 1)
-          @picture_indexes[index] << value if @picture_indexes[index].size == 1
+      if value == 1 or value == 2 or value == 3
+        if (value == 1 and @picture_indexes[index] == [2]) or 
+           (value == 2 and @picture_indexes[index] == [1]) or 
+           (value == 1 and @picture_indexes[index] == [2, 3])
+          @picture_indexes[index] = [1, 2]
         else
-          @picture_indexes[index] = [value] unless @picture_indexes[index].size == 2
+          if (value == 2 and @picture_indexes[index] == [3]) or 
+             (value == 3 and @picture_indexes[index] == [2]) or 
+             (value == 3 and @picture_indexes[index] == [1, 2])
+            @picture_indexes[index] = [2, 3]
+          else
+            @picture_indexes[index] = [value] unless @picture_indexes[index].size == 2
+          end
         end
       else
         @picture_indexes[index] = [value]
       end
+      value = 5 if @picture_indexes[index] == [1, 2]
+      value = 6 if @picture_indexes[index] == [2, 3]
       @pictures[index].path = @picture_paths[value]
     end
+
+
 
     def set_pictures
       current_x, current_y = @position.x, @position.y
@@ -64,7 +76,7 @@ module Sokoban
     end
 
     def picture_hover?(index, mouse_left, mouse_top)
-      @pictures[index].style[:left] + @pictures[index].full_width > mouse_left and 
+      @pictures[index].style[:left] + @pictures[index].full_width > mouse_left and
       @pictures[index].style[:top] + @pictures[index].full_height > mouse_top
     end
 
@@ -77,15 +89,23 @@ module Sokoban
 
     def propriety_check
       warnings = ""
-      warnings << "The level doesn't have a start." unless @picture_indexes.include? [3]
-      warnings << " Cubes don't match the finals count." unless @picture_indexes.count([1]) == @picture_indexes.count([2])
-      warnings << " There are no cubes." if @picture_indexes.count([1]) == 0 and @picture_indexes.count([1, 2]) == 0 and @picture_indexes.count([2, 1]) == 0
+      warnings << "The level doesn't have a start." unless @picture_indexes.include? [3] or @picture_indexes.include? [2, 3]
+      if (@picture_indexes.count([1]) != @picture_indexes.count([2]) and @picture_indexes.include?([2, 3]) == false) or
+         ((@picture_indexes.count([1]) - 1) != @picture_indexes.count([2]) and @picture_indexes.include? [2, 3])
+        warnings << " Cubes don't match the finals count."
+      end
+      warnings << " There are no cubes." if @picture_indexes.count([1]) == 0 and @picture_indexes.count([1, 2]) == 0
+      warnings << " The level is already solved." if @picture_indexes.all? { |element| element != [1] } and warnings == ""
       #should check if there is a solution
       warnings
     end
 
     def fix_start
       picture_index_change(@picture_indexes.index([3]), 4) if @picture_indexes.include? [3]
+      if @picture_indexes.include? [2, 3]
+        @pictures[@picture_indexes.index([2, 3])].path = @picture_paths[2]
+        @picture_indexes[@picture_indexes.index([2, 3])] = [2]
+      end
     end
 
     def update(left, top, tool_box)
