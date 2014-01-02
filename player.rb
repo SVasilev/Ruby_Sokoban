@@ -31,8 +31,6 @@ module Sokoban
       end
     end
 
-
-
     def move(direction)
       #These long lines should be fixed.
       case direction
@@ -69,7 +67,6 @@ module Sokoban
           @index += @ground.width
         end
       end
-      p :pradnq if @position.x - @picture.full_width != @ground.position.x or @ground.picture_indexes[index - 1].include?(1) == false
     end
   end
 end
