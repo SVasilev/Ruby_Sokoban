@@ -43,8 +43,8 @@ module Sokoban
           @index -= 1
         end
       when :right
-        if @position.x != (@ground.position.x + @ground.width_in_pxels - @picture.full_width) and 
-           (@position.x + 2 * @picture.full_width != @ground.position.x + @ground.width_in_pxels or @ground.picture_indexes[index + 1].include?(1) == false) and valid_move? -1
+        if @position.x != (@ground.position.x + @ground.width_in_pixels - @picture.full_width) and 
+           (@position.x + 2 * @picture.full_width != @ground.position.x + @ground.width_in_pixels or @ground.picture_indexes[index + 1].include?(1) == false) and valid_move? -1
           @position.x = @position.x + @picture.full_width
           @picture.move @position.x, @position.y
           push_cube -1
@@ -67,6 +67,10 @@ module Sokoban
           @index += @ground.width
         end
       end
+    end
+
+    def clear
+      @picture.path = ""
     end
   end
 end

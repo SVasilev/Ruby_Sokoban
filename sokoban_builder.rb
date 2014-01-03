@@ -1,13 +1,5 @@
-require 'position.rb'
-require 'border.rb'
-require 'tool.rb'
-require 'toolbox.rb'
-require 'ground.rb'
-require 'player.rb'
-require 'menu.rb'
-require 'picture_paths.rb'
-require 'game.rb'
-require 'dropdownMenu.rb'
+require 'load_data.rb'
+Sokoban.require_files
 
 Shoes.app title: "Sokoban editor", width: 1000, height: 600, resizable: false do
 
@@ -88,13 +80,13 @@ Shoes.app title: "Sokoban editor", width: 1000, height: 600, resizable: false do
     end
   end
 
-  dummy = [[4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [0], [0], [0], [0], [0], [0], [4], [4], [4], [4], [4], [4], [4], [4], [0], [3], [4], [4], [4], [0], [4], [4], [4], [4], [4], [4], [4], [4], [0], [4], [4], [2, 1], [4], [0], [4], [4], [4], [4], [4], [4], [4], [4], [0], [4], [1], [2], [4], [0], [4], [4], [4], [4], [4], [4], [4], [4], [0], [0], [0], [0], [0], [0], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4]]
-  dummy.each_index do |index|
-    dummy[index].each do |element|
-      ground.picture_index_change index, element
-    end
-  end
-  Sokoban.game ground.picture_indexes
+  #dummy = [[4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [0], [0], [0], [0], [0], [0], [4], [4], [4], [4], [4], [4], [4], [4], [0], [4], [4], [4], [4], [0], [4], [4], [4], [4], [4], [4], [4], [4], [0], [4], [4], [1, 2], [4], [0], [4], [4], [4], [4], [4], [4], [4], [4], [0], [4], [1], [2, 3], [4], [0], [4], [4], [4], [4], [4], [4], [4], [4], [0], [0], [0], [0], [0], [0], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4], [4]]
+  #dummy.each_index do |index|
+  #  dummy[index].each do |element|
+  #    ground.picture_index_change index, element
+  #  end
+  #end
+  #Sokoban.game ground.picture_indexes
   
   #@button = button "asd"
   #@button.style width: 100

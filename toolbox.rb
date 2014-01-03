@@ -38,7 +38,7 @@ module Sokoban
       current_y = @position.y + 10
       @tools.each_slice(2) do |tool_slice|
         tool_slice[0].picture.move @position.x, current_y + @padding
-        tool_slice[1].picture.move @position.x + tool_slice[0].picture.full_width + @padding, current_y + @padding if tool_slice[1] != nil
+        tool_slice[1].picture.move @position.x + tool_slice[0].picture.full_width + @padding, current_y + @padding unless tool_slice[1] == nil
         current_y += tool_slice[0].picture.full_height + @padding
       end
       draw_border

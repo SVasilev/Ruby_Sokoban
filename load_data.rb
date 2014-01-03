@@ -8,4 +8,16 @@ module Sokoban
   def self.set_ground_image_paths
     ["NormalElements/wall.gif", "NormalElements/cube.gif", "NormalElements/final.gif", "NormalElements/smiley.gif", "NormalElements/empty.gif", "NormalElements/cube_above_final.gif", "NormalElements/smiley_above_final.gif"]
   end
+
+  def self.require_files
+    require 'position.rb'
+    require 'border.rb'
+    require 'tool.rb'
+    require 'toolbox.rb'
+    require 'ground.rb'
+    require 'player.rb'
+    require 'menu.rb'
+    require 'game.rb'
+    require 'dropdownMenu.rb'
+  end
 end

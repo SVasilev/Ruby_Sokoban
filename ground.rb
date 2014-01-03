@@ -57,7 +57,7 @@ module Sokoban
       draw_border
     end
 
-    def width_in_pxels
+    def width_in_pixels
       @width * @pictures[0].full_width
     end
 
@@ -66,7 +66,7 @@ module Sokoban
     end
 
     def draw_border
-      Border.new(@window, Position.new(@position.x, @position.y), Position.new(@position.x + width_in_pxels, @position.y + height_in_pixels), 15).draw
+      Border.new(@window, Position.new(@position.x, @position.y), Position.new(@position.x + width_in_pixels, @position.y + height_in_pixels), 15).draw
     end
 
     def ground_hover?(mouse_left, mouse_top)
@@ -96,7 +96,6 @@ module Sokoban
       end
       warnings << " There are no cubes." if @picture_indexes.count([1]) == 0 and @picture_indexes.count([1, 2]) == 0
       warnings << " The level is already solved." if @picture_indexes.all? { |element| element != [1] } and warnings == ""
-      #should check if there is a solution
       warnings
     end
 
