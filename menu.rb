@@ -24,7 +24,7 @@ module Sokoban
     def display
       @stack.style left: @position.x, top: @position.y, width: @width, height: height
       @button_texts.each do |text| 
-        @stack.button(text).style width: @width, height: @button_height, margin_bottom: @bottom_margin#, state: "disabled"
+        @stack.button(text).style width: @width, height: @button_height, margin_bottom: @bottom_margin
       end
       draw_border
     end

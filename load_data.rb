@@ -1,12 +1,12 @@
 module Sokoban
   def self.set_toolbox_image_paths
-    [["ToolboxNormal/wall.gif", "ToolboxClicked/wall.gif"], ["ToolboxNormal/cube.gif", "ToolboxClicked/cube.gif"],
-    ["ToolboxNormal/final.gif", "ToolboxClicked/final.gif"], ["ToolboxNormal/smiley.gif", "ToolboxClicked/smiley.gif"],
-    ["ToolboxNormal/eraser.gif", "ToolboxClicked/eraser.gif"]]
+    [["toolbox_normal/wall.gif", "toolbox_clicked/wall.gif"], ["toolbox_normal/cube.gif", "toolbox_clicked/cube.gif"],
+    ["toolbox_normal/final.gif", "toolbox_clicked/final.gif"], ["toolbox_normal/smiley.gif", "toolbox_clicked/smiley.gif"],
+    ["toolbox_normal/eraser.gif", "toolbox_clicked/eraser.gif"]]
   end
-
+  
   def self.set_ground_image_paths
-    ["NormalElements/wall.gif", "NormalElements/cube.gif", "NormalElements/final.gif", "NormalElements/smiley.gif", "NormalElements/empty.gif", "NormalElements/cube_above_final.gif", "NormalElements/smiley_above_final.gif"]
+    ["normal_elements/wall.gif", "normal_elements/cube.gif", "normal_elements/final.gif", "normal_elements/smiley.gif", "normal_elements/empty.gif", "normal_elements/cube_above_final.gif", "normal_elements/smiley_above_final.gif"]
   end
 
   def self.require_files
@@ -18,6 +18,6 @@ module Sokoban
     require 'player.rb'
     require 'menu.rb'
     require 'game.rb'
-    require 'dropdownMenu.rb'
+    require 'dropdown_menu.rb'
   end
 end

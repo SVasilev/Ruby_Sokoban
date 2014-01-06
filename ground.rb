@@ -41,8 +41,6 @@ module Sokoban
       @pictures[index].path = @picture_paths[value]
     end
 
-
-
     def set_pictures
       current_x, current_y = @position.x, @position.y
       @pictures.each_index do |index|
