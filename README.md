@@ -19,9 +19,9 @@ want to change something in a level you can load it in the editor to do so.
 Playing Levels
 ==============
 
-Run sokoban.rb and then choose load level from the menu bar. Enjoy.
+Run sokoban.rb and then choose load level from the menu bar. Load your leve. Enjoy.
 
 Copyright
 =========
 
-Ruby sokoban made by Stefan Vasilev for ruby course in University of Sofia.
+Ruby sokoban is made by Stefan Vasilev for ruby course in University of Sofia.
