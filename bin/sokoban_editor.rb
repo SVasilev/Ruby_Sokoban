@@ -1,8 +1,7 @@
-require 'load_data.rb'
+require_relative '../lib/sokoban/load_data'
 Sokoban.require_files
 
 Shoes.app title: "Sokoban editor", width: 1000, height: 600, resizable: false do
-
   toolbox_image_paths = Sokoban.set_toolbox_image_paths
   tool_box = Sokoban::ToolBox.new (para strong("Tool Box"), font: "Arial"), self, Sokoban::Position.new(40, 30)
   toolbox_image_paths.each { |paths| tool_box.add_tool Sokoban::Tool.new image, paths }
